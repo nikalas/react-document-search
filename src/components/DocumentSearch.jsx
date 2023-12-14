@@ -8,8 +8,10 @@ import { Results } from "./Results";
 import { SearchField } from "./SearchField";
 import { LanguageFilter } from "./LanguageFilter";
 import { MessageWrapper } from "./MessageWrapper";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
-export const fieldClasses = "rounded h-16 pl-8 items-center flex shadow-inner-md  bg-white";
+export const fieldClasses =
+	"rounded h-16 pl-8 items-center flex shadow-inner-md  bg-white";
 
 export function DocumentSearch() {
 	const [search, setSearch] = useState("");
@@ -17,7 +19,10 @@ export function DocumentSearch() {
 	const [loading, setLoading] = useState(false);
 	const [filters, setFilters] = useState([]);
 	const [languages, setLanguages] = useState([]);
-	const [selectedLanguage, setSelectedLanguage] = useState({ value: "all", label: "All" }); //TODO Should this be set by url?
+	const [selectedLanguage, setSelectedLanguage] = useState({
+		value: "all",
+		label: "All",
+	}); //TODO Should this be set by url?
 	const [languagesIsDisabled, setLanguagesIsDisabled] = useState(true);
 	const __ = useTranslations(); // TODO: This can be removed once proper i18n translations are working
 
@@ -91,6 +96,8 @@ export function DocumentSearch() {
 	//  setSearch("si 10");
 	// } ,500 );
 
+	const [parent] = useAutoAnimate();
+
 	return (
 		<search-box class="max-w-screen-xl block mx-auto">
 			<div className="mb-8 bg-gray-100 border border-gray-200 rounded-md shadow-md md:py-14">
@@ -111,18 +118,53 @@ export function DocumentSearch() {
 							slug: "product-type",
 						},
 					].map((filter) => (
-						<Filter key={filter.slug} className="w-full mt-4 uppercase" filter={filter} filters={filters} setFilters={setFilters} />
+						<Filter
+							key={filter.slug}
+							className="w-full mt-4 uppercase"
+							filter={filter}
+							filters={filters}
+							setFilters={setFilters}
+						/>
 					))}
 
-					{<LanguageFilter className="w-full mt-4 uppercase" languages={languages} setLanguages={setLanguages} onLanguageChange={handleLanguageChange} isDisabled={languagesIsDisabled} />}
+					{
+						<LanguageFilter
+							className="w-full mt-4 uppercase"
+							languages={languages}
+							setLanguages={setLanguages}
+							onLanguageChange={handleLanguageChange}
+							isDisabled={languagesIsDisabled}
+						/>
+					}
 				</search-filters>
-				<SearchField search={search} setSearch={setSearch} className="max-w-screen-md" />
+				<SearchField
+					search={search}
+					setSearch={setSearch}
+					className="max-w-screen-md"
+				/>
 			</div>
-			<search-results class="grid grid-cols-1 gap-8 max-w-screen-xl">
+			<div
+				id="results-wrapper"
+				className="max-w-screen-xl"
+			>
 				{loading && <MessageWrapper message={`${__("Loading", "dbyh")}...`} />}
-				{!loading && <Results results={results} selectedLanguage={selectedLanguage} languages={languages} />}
-				{!loading && showNoResultsMessage && <MessageWrapper message={`${__("No results found", "dbyh")}`} />}
-			</search-results>
+				{!loading && showNoResultsMessage && (
+					<MessageWrapper message={`${__("No results found", "dbyh")}`} />
+				)}
+
+				<search-results
+					ref={parent}
+					class="grid grid-cols-1 gap-8 max-w-screen-xl"
+				>
+					{!loading && (
+						<Results
+							results={results}
+							selectedLanguage={selectedLanguage}
+							languages={languages}
+						/>
+					)}
+				</search-results>
+			</div>
 		</search-box>
 	);
 }
