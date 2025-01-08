@@ -22,3 +22,13 @@ npm install
 ```bash
 npm run dev
 ```
+
+## Lessons learned
+
+- Debouncing is important. Use it.
+- Don't try to implement your own caching.
+
+Both of these can and should be solved by using [TanStack Query](https://tanstack.com/query/latest).
+
+- Use different layout components for mobile and larger table views. Sure this was good experience, but just bad practice.
+- Do. not. try. custom. tags! This was just plain stupid.
